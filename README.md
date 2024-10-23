@@ -11,7 +11,7 @@ This application is a way for customers to interact with a business in a conveni
 - As a customer, I want to be able to search products, so I can find what I'm looking for.
 - As a store owner, I want to be able to list products easily so that I can reach more customers.
 - As a customer, I want to be able to have a receipt of my purchase for more transparency
-- 
+- As a store owner, I want to be able to keep track of my transactions.
 
 
 ### Prerequisites
@@ -39,6 +39,10 @@ Follow these steps to get your application running within IntelliJ IDEA:
     - java.io.*
 
 ## Demo
+![Home Screen]("C:\Users\jpres\OneDrive\Desktop\Pluralsight\online-store-HomeScreen.png")
+![Search By ID]("C:\Users\jpres\OneDrive\Desktop\Pluralsight\online-store-SearchByID.png")
+![Check Out]("C:\Users\jpres\OneDrive\Desktop\Pluralsight\online-store-CheckOut.png")
+![Check Out Error]("C:\Users\jpres\OneDrive\Desktop\Pluralsight\online-store-CheckOutError.png")
 
 ## Future Work
 

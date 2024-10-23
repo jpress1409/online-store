@@ -2,7 +2,6 @@ package com.pluralsight;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -68,6 +67,7 @@ public class Store {
                         break;
                     }
                     checkOut(cart, totalAmount, deposit);
+                    break;
                 case 6:
                     System.out.println("Thank you for shopping with us!");
                     break;
@@ -225,43 +225,47 @@ public class Store {
         // Displays amount in account and total of cart
         System.out.println("You have $" + deposit + " in your account");
         System.out.println("Your total is $" + totalAmount);
+        System.out.println("");
         // Subtracts total of cart from amount in account and reassigns deposit variable to this value.
-        deposit = deposit - totalAmount;
+
 
         // Checks if funds in account are sufficient
-        if(deposit < 0){
+        if(totalAmount > deposit){
             System.out.println("Insufficient funds");
-            System.out.println("You have $" + deposit);
-        }
+            System.out.println("");
+
+        }else {
+            deposit -= totalAmount;
 
             System.out.println("Current balance $" + deposit);
 
             // Loads items in cart ArrayList into receipt ArrayList
-            for(Product product : cart) {
-                    product.getId();
-                    product.getName();
-                    product.getPrice();
+            for (Product product : cart) {
+                product.getId();
+                product.getName();
+                product.getPrice();
 
                 Product purchasedProduct = new Product(product.getId(), product.getName(), product.getPrice());
                 // Adds new product to inventory Arraylist.
                 receipt.add(purchasedProduct);
             }
-        System.out.println("Please Enter Your Name for our records");
-        String userName = scan.nextLine();
+            System.out.println("Please Enter Your Name for our records");
+            String userName = scan.nextLine();
             // displays new ArrayList
             System.out.println("Receipt for " + today + ": ");
             System.out.printf("%-8s %-35s %-6s%n", "ID:", "Name:", "Price:");
-            for (Product product : receipt){
+            for (Product product : receipt) {
                 System.out.printf("%-8s %-35s %-6s%n",
                         product.getId(),
                         product.getName(),
-                       "$" + product.getPrice());
-                try(BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_NAME, true))) {
+                        "$" + product.getPrice());
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_NAME, true))) {
 
 
                     StringBuilder builder = new StringBuilder("User Name: ");
                     builder.append(userName).append(", Date: ");
-                    builder.append(today).append(", ID: ");;
+                    builder.append(today).append(", ID: ");
+                    ;
                     builder.append(product.getId()).append(", Product Name: ");
                     builder.append(product.getName()).append(", Price: $");
                     builder.append(product.getPrice());
@@ -270,13 +274,14 @@ public class Store {
                     String result = builder.toString();
                     writer.write(result);
                     writer.newLine();
-                }catch(Exception e){
+                } catch (Exception e) {
                     System.err.println("Error Writing to the Log File" + e.getMessage());
                 }
             }
 
 
             System.out.println("Thank you for shopping!");
+        }
     }
    public static void findProductById(String id, ArrayList<Product> inventory) {
 
