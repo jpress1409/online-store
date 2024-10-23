@@ -1,13 +1,15 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Store {
+
+    private static final String LOG_FILE_NAME = "receipt.csv";
 
     public static void main(String[] args) {
         // Create scanner to read user input
@@ -51,7 +53,12 @@ public class Store {
                     findProductById(id, inventory);
                     break;
                 case 3:
-                    displayProducts(inventory, cart, scan);
+                    String contShop = "yes";
+                    while(contShop.equalsIgnoreCase("yes")) {
+                        displayProducts(inventory, cart, scan);
+                        System.out.println("Would you like to continue shopping?");
+                        contShop = scan.nextLine();
+                    }
                     break;
                 case 4:
                     displayCart(cart, scan, totalAmount);
@@ -73,9 +80,8 @@ public class Store {
     }
 
     public static void loadInventory(String fileName, ArrayList<Product> inventory) {
-
-
-
+        /*BufferedReader reads through csv file and creates a new Product using parameters
+        * in the product class.*/
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName));){
             String line;
             reader.readLine();
@@ -87,7 +93,7 @@ public class Store {
                 double price = Double.parseDouble(parts[2]);
 
                 Product product = new Product(id, name, price);
-
+                // Adds new product to inventory Arraylist.
                 inventory.add(product);
 
             }
@@ -97,19 +103,19 @@ public class Store {
     }
 
     public static void displayProducts(ArrayList<Product> inventory, ArrayList<Product> cart, Scanner scan) {
-        // This method should display a list of products from the inventory,
-        // and prompt the user to add items to their cart. The method should
-        // prompt the user to enter the ID of the product they want to add to
-        // their cart. The method should
-        // add the selected product to the cart ArrayList.
 
-        System.out.printf("%-8s %-35s %-6s%n", "id", "name", "price");
+        /* Iterate through all the Products in the inventory ArrayList and formats them
+        * into a table that is Left Aligned, in line with the headers and has an
+        * approriate number of characters allowed.*/
         System.out.println("Products: ");
+        System.out.printf("%-8s %-35s %-6s%n", "ID:", "Name:", "Price:");
+
                 for (Product product : inventory) {
                     System.out.printf("%-8s %-35s %-6s%n",
+                    // Fetches variables form Product Class using the getters.
                     product.getId(),
                     product.getName(),
-                    product.getPrice());
+                   "$" + product.getPrice());
                 }
         System.out.println(" ");
         System.out.println("What would you like to add to your cart? ");
@@ -128,17 +134,20 @@ public class Store {
                 }
             }
 
+            // Assigns new Product to variable selectedProduct to be used more easily.
             if (selectedProduct != null) {
                 System.out.println("You selected: ");
-                System.out.printf("%-8s %-35s %-6s%n", "id", "name", "price");
+                // Keeps formatting consistent throughout.
+                System.out.printf("%-8s %-35s %-6s%n", "ID:", "Name:", "Price:");
                 System.out.printf("%-8s %-35s %-6s%n",
                         selectedProduct.getId(),
                         selectedProduct.getName(),
-                        selectedProduct.getPrice());
+                       "$" + selectedProduct.getPrice());
                 System.out.println("Would you like to add this product to your cart? (yes/no)");
                 String addToCart = scan.nextLine();
                 if (addToCart.equalsIgnoreCase("yes")) {
-                    cart.add(selectedProduct); // Add the selected product to the cart
+                    // Add the selected product to the cart
+                    cart.add(selectedProduct);
                     System.out.printf("%-8s %-35s %-6s ",
                             selectedProduct.getId(),
                             selectedProduct.getName(),
@@ -160,21 +169,18 @@ public class Store {
 
 
     public static void displayCart(ArrayList<Product> cart, Scanner scan, double totalAmount) {
-        // This method should display the items in the cart ArrayList, along
-        // with the total cost of all items in the cart. The method should
-        // prompt the user to remove items from their cart by entering the ID
-        // of the product they want to remove. The method should update the cart ArrayList and totalAmount
-        // variable accordingly.
 
-        System.out.printf("%-8s %-35s %-6s%n", "id", "name", "price");
+        // Iterates through all Products in cart ArrayList and formats appropriately for display.
         System.out.println("Products: ");
+        System.out.printf("%-8s %-35s %-6s%n", "ID:", "Name:", "Price:");
         for(Product product : cart){
             System.out.printf("%-8s %-35s %-6s%n",
                     product.getId(),
                     product.getName(),
-                    product.getPrice());
+                   "$" + product.getPrice());
 
         }
+        // Iterates through getters of Products in car ArrayList, increments them and reassigns them to a single variable.
         for(Product product : cart){
             totalAmount += product.getPrice();
         }
@@ -184,11 +190,13 @@ public class Store {
         System.out.println("Would you like to remove anything?");
         String response = scan.nextLine();
 
+        // Allows user to remove items form the cart.
         if(response.equalsIgnoreCase("yes")){
 
             System.out.println("Enter the item ID you would like to remove.");
             String id = scan.nextLine();
 
+            // Decrements and reassigns totalAmount variable if products have been removed.
             for (Product product : cart) {
                 if (product.getId().equalsIgnoreCase(id)) {
                     cart.remove(product);
@@ -198,74 +206,88 @@ public class Store {
                     System.out.println("Product not in cart");
                 }
             }
+            // Displays final total.
             System.out.println("Your new total is " + totalAmount);
         }
     }
 
    public static double depositInAccount(Scanner scan){
 
+        // Allows user to deposit money into store account for purchase of items.
         System.out.println("How much would you like to deposit?");
        return scan.nextDouble();
    }
 
     public static void checkOut(ArrayList<Product> cart, double totalAmount, double deposit) {
-        // This method should calculate the total cost of all items in the cart,
-        // and display a summary of the purchase to the user. The method should
-        // prompt the user to confirm the purchase, and deduct the total cost
-        // from their account if they confirm.
-
+        // Fetches current day and saves it to variable
         LocalDate today = LocalDate.now();
+        ArrayList<Product> receipt = new ArrayList<>();
 
 
+        // Fetches total of items in cart.
         for(Product product : cart){
             totalAmount += product.getPrice();
         }
-        System.out.println("You have $" + totalAmount + " in your account");
+
+        // Displays amount in account and total of cart
+        System.out.println("You have $" + deposit + " in your account");
         System.out.println("Your total is $" + totalAmount);
+        // Subtracts total of cart from amount in account and reassigns deposit variable to this value.
         deposit = deposit - totalAmount;
+
+        // Checks if funds in account are sufficient
         if(deposit < 0){
             System.out.println("Insufficient funds");
             System.out.println("You have $" + deposit);
-        }else{
-            System.out.println("Thank you for shopping!");
+        }
+
             System.out.println("Current balance $" + deposit);
 
-            System.out.printf("%-8s %-35s %-6s%n", "id", "name", "price");
-            System.out.println("Products: ");
-            for(Product product : cart){
+            // Loads items in cart ArrayList into receipt ArrayList
+            for(Product product : cart) {
+                    product.getId();
+                    product.getName();
+                    product.getPrice();
+
+                Product purchasedProduct = new Product(product.getId(), product.getName(), product.getPrice());
+                // Adds new product to inventory Arraylist.
+                receipt.add(purchasedProduct);
+            }
+
+            // displays new ArrayList
+            System.out.println("Receipt for " + today + ": ");
+            System.out.printf("%-8s %-35s %-6s%n", "ID:", "Name:", "Price:");
+            for (Product product : receipt){
                 System.out.printf("%-8s %-35s %-6s%n",
                         product.getId(),
                         product.getName(),
-                        product.getPrice());
-
+                       "$" + product.getPrice());
             }
-            
-            Receipt receipt = new Receipt(today, totalAmount);
-            System.out.println(receipt);
-        }
+            System.out.println("Thank you for shopping!");
+
 
 
 
 
     }
    public static void findProductById(String id, ArrayList<Product> inventory) {
-       // This method should search the inventory ArrayList for a product with
-       // the specified ID, and return the corresponding com.pluralsight.Product object. If
-       // no product with the specified ID is found, the method should return
-       // null.
 
        boolean found = false;
 
+       // Checks if product ID matches Product in inventory
        while (!found) {
+           // Fetches info for any products that match search.
+           System.out.println("Products: ");
+           System.out.printf("%-8s %-35s %-6s%n", "ID:", "Name:", "Price:");
            for (Product product : inventory) {
-               System.out.printf("%-8s %-35s %-6s%n", "id", "name", "price");
-               System.out.println("Products: ");
                if (product.getId().equalsIgnoreCase(id)) {
                    System.out.printf("%-8s %-35s %-6s%n",
                            product.getId(),
                            product.getName(),
-                           product.getPrice());
+                          "$" + product.getPrice());
+                   // Reassigns "found" to stop the loop
                    found = true;
+                   break;
                }
            }
        }

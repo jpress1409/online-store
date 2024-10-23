@@ -7,7 +7,7 @@ public class Receipt {
     private Product product;
     private double salesTotal;
 
-    public Receipt(LocalDate orderDate, double salesTotal) {
+    public Receipt(LocalDate orderDate, double salesTotal, Product product) {
         this.orderDate = orderDate;
         this.product = product;
         this.salesTotal = salesTotal;
