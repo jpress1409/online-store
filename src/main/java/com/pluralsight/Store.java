@@ -3,7 +3,6 @@ package com.pluralsight;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -161,13 +160,6 @@ public class Store {
             }
     }
 
-
-
-
-
-
-
-
     public static void displayCart(ArrayList<Product> cart, Scanner scan, double totalAmount) {
 
         // Iterates through all Products in cart ArrayList and formats appropriately for display.
@@ -222,6 +214,7 @@ public class Store {
         // Fetches current day and saves it to variable
         LocalDate today = LocalDate.now();
         ArrayList<Product> receipt = new ArrayList<>();
+        Scanner scan = new Scanner(System.in);
 
 
         // Fetches total of items in cart.
@@ -253,7 +246,8 @@ public class Store {
                 // Adds new product to inventory Arraylist.
                 receipt.add(purchasedProduct);
             }
-
+        System.out.println("Please Enter Your Name for our records");
+        String userName = scan.nextLine();
             // displays new ArrayList
             System.out.println("Receipt for " + today + ": ");
             System.out.printf("%-8s %-35s %-6s%n", "ID:", "Name:", "Price:");
@@ -262,13 +256,27 @@ public class Store {
                         product.getId(),
                         product.getName(),
                        "$" + product.getPrice());
+                try(BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_NAME, true))) {
+
+
+                    StringBuilder builder = new StringBuilder("User Name: ");
+                    builder.append(userName).append(", Date: ");
+                    builder.append(today).append(", ID: ");;
+                    builder.append(product.getId()).append(", Product Name: ");
+                    builder.append(product.getName()).append(", Price: $");
+                    builder.append(product.getPrice());
+
+
+                    String result = builder.toString();
+                    writer.write(result);
+                    writer.newLine();
+                }catch(Exception e){
+                    System.err.println("Error Writing to the Log File" + e.getMessage());
+                }
             }
+
+
             System.out.println("Thank you for shopping!");
-
-
-
-
-
     }
    public static void findProductById(String id, ArrayList<Product> inventory) {
 
@@ -292,4 +300,5 @@ public class Store {
            }
        }
    }
+
 }
