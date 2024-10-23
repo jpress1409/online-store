@@ -39,10 +39,10 @@ Follow these steps to get your application running within IntelliJ IDEA:
     - java.io.*
 
 ## Demo
-![Home Screen]("C:\Users\jpres\OneDrive\Desktop\Pluralsight\online-store-HomeScreen.png")
-![Search By ID]("C:\Users\jpres\OneDrive\Desktop\Pluralsight\online-store-SearchByID.png")
-![Check Out]("C:\Users\jpres\OneDrive\Desktop\Pluralsight\online-store-CheckOut.png")
-![Check Out Error]("C:\Users\jpres\OneDrive\Desktop\Pluralsight\online-store-CheckOutError.png")
+![Check Out](C:\Users\jpres\OneDrive\Desktop\Pluralsight\workshops\online-store\online-store-CheckOut.png)
+![Search By ID](C:\Users\jpres\OneDrive\Desktop\Pluralsight\workshops\online-store\online-store-HomeScreen.png)
+![Home Screen](C:\Users\jpres\OneDrive\Desktop\Pluralsight\workshops\online-store\online-store-HomeScreen.png)
+![Check Out Error](C:\Users\jpres\OneDrive\Desktop\Pluralsight\workshops\online-store\online-store-CheckOutError.png)
 
 ## Future Work
 
